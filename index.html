@@ -3,39 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <title>ZeroByte :: Terminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
 
 <style>
-body {
-  margin: 0;
-  background: black;
-  color: #00ff88;
-  font-family: monospace;
+:root{
+  --bg:#050607;
+  --border:#1b2330;
+  --text:#d5fbe8;
+  --muted:#9bb1a6;
+  --accent:#00ff88;
+  --accent2:#00d4ff;
+  --shadow:0 10px 35px rgba(0,0,0,.55);
+  --mono:ui-monospace,Menlo,Monaco,Consolas,"Courier New",monospace;
 }
-
-.container {
-  padding: 30px;
-  max-width: 900px;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(800px 400px at 10% 10%,rgba(0,255,136,.15),transparent 60%),var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
-
-.line { margin-bottom: 5px; }
-.prompt { color: #00ff88; }
-.cmd { color: #00d4ff; }
-.output { color: #cccccc; }
-
-input {
-  background: transparent;
-  border: none;
-  color: #00ff88;
-  font-family: monospace;
-  font-size: 16px;
-  width: 100%;
-  outline: none;
+.wrap{width:min(1000px,95%)}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px
 }
+.pill{
+  border:1px solid var(--border);
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(0,0,0,.3);
+  color:var(--muted)
+}
+.terminal{
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(0,0,0,.6);
+  box-shadow:var(--shadow);
+  overflow:hidden
+}
+.term-head{
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  background:rgba(0,0,0,.4);
+  font-size:13px;
+  color:var(--muted)
+}
+.term-body{padding:14px}
+#line{white-space:pre-wrap;font-size:14px;line-height:1.5;max-height:60vh;overflow:auto}
+.prompt{color:var(--accent)}
+.cmd{color:var(--accent2)}
+.hr{height:1px;background:var(--border);margin:10px 0}
+.input{
+  border-top:1px solid var(--border);
+  padding:10px 14px;
+  display:flex;gap:8px
+}
+input{
+  flex:1;
+  background:transparent;
+  border:0;
+  color:var(--text);
+  font-family:var(--mono);
+  outline:none
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
 </style>
 </head>
 
 <body>
-<div class="container" id="terminal"></div>
+<div class="wrap">
+  <div class="topbar">
+    <div class="pill">ZeroByte / 1ZeroByte1</div>
+    <div class="pill">type <span class="cmd">help</span></div>
+  </div>
+
+  <div class="terminal">
+    <div class="term-head">root@zerobyte:~# portfolio</div>
+    <div class="term-body">
+      <div id="line"></div>
+    </div>
+    <div class="input">
+      <span class="prompt">#</span>
+      <input id="in" autocomplete="off" placeholder="help | about | skills | links | clear">
+    </div>
+  </div>
+</div>
 
 <script>
 const LINKS = {
@@ -46,72 +105,67 @@ const LINKS = {
   certificates: "https://drive.google.com/drive/folders/18SYLIKeETIyENgRCTukXRsq3a09OQ0d9"
 };
 
-const terminal = document.getElementById("terminal");
+const out=document.getElementById("line");
+const input=document.getElementById("in");
 
-function print(text, cls="output") {
-  const div = document.createElement("div");
-  div.className = "line " + cls;
-  div.innerHTML = text;
-  terminal.appendChild(div);
+function print(t){out.innerHTML+=t+"<br>";out.scrollTop=out.scrollHeight}
+function hr(){print("<div class='hr'></div>")}
+function banner(){
+print("<span class='cmd'>ZeroByte</span> — Exploit Dev / Reverse Engineering / CTF");
+print("Location: Yemen");
+print("Motto: 0x0 is where they see nothing; I see the beginning.");
+hr();
+print("Type <span class='cmd'>help</span> to list commands");
 }
-
-function banner() {
-  print("ZeroByte — Hacker Terminal", "cmd");
-  print("Exploit Dev | Reverse Engineering | CTF");
-  print("Location: Yemen");
-  print("Motto: 0x0 is where they see nothing; I see the beginning.");
-  print("");
-  print("Type <span class='cmd'>help</span>");
+function help(){
+hr();
+print("about      - who am I");
+print("skills     - what I do");
+print("links      - social links");
+print("clear      - clear terminal");
+hr();
 }
-
-function help() {
-  print("Commands:");
-  print("about, skills, links, clear");
+function about(){
+hr();
+print("Junior Security Researcher focused on:");
+print("- Binary Exploitation");
+print("- Reverse Engineering");
+print("- Bug Bounty & CTF");
+hr();
 }
-
-function about() {
-  print("Junior Security Researcher focused on exploit dev, reverse engineering, and CTF.");
+function skills(){
+hr();
+print("• Reverse Engineering");
+print("• PWN / Binary Exploitation");
+print("• C, Python, Assembly");
+print("• Web & Network Security");
+hr();
 }
-
-function skills() {
-  print("Reverse Engineering");
-  print("Binary Exploitation / Pwn");
-  print("C, Python, Assembly");
-  print("Bug Bounty & CTF");
+function links(){
+hr();
+print("GitHub: <a href='"+LINKS.github+"' target='_blank'>"+LINKS.github+"</a>");
+print("LinkedIn: <a href='"+LINKS.linkedin+"' target='_blank'>LinkedIn</a>");
+print("YouTube: <a href='"+LINKS.youtube+"' target='_blank'>YouTube</a>");
+print("X: <a href='"+LINKS.x+"' target='_blank'>X</a>");
+print("Certificates: <a href='"+LINKS.certificates+"' target='_blank'>Drive</a>");
+hr();
 }
-
-function links() {
-  print("GitHub: <a href='"+LINKS.github+"' target='_blank'>"+LINKS.github+"</a>");
-  print("LinkedIn: <a href='"+LINKS.linkedin+"' target='_blank'>LinkedIn</a>");
-  print("YouTube: <a href='"+LINKS.youtube+"' target='_blank'>YouTube</a>");
-  print("X: <a href='"+LINKS.x+"' target='_blank'>X</a>");
-  print("Certificates: <a href='"+LINKS.certificates+"' target='_blank'>Drive</a>");
-}
-
-function clear() {
-  terminal.innerHTML = "";
-}
-
-function command(cmd) {
-  print("<span class='prompt'>$</span> " + cmd, "cmd");
-  switch(cmd) {
-    case "help": help(); break;
-    case "about": about(); break;
-    case "skills": skills(); break;
-    case "links": links(); break;
-    case "clear": clear(); break;
-    default: print("command not found");
-  }
-}
+function clear(){out.innerHTML=""}
 
 banner();
 
-document.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    const cmd = prompt("command:");
-    if (cmd) command(cmd.trim());
-  }
-});
+input.addEventListener("keydown",e=>{
+if(e.key==="Enter"){
+const c=input.value.trim();
+print("<span class='prompt'>#</span> "+c);
+if(c==="help")help();
+else if(c==="about")about();
+else if(c==="skills")skills();
+else if(c==="links")links();
+else if(c==="clear")clear();
+else print("command not found");
+input.value="";
+}});
 </script>
 </body>
 </html>
