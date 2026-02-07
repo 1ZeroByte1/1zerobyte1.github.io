@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ZeroByte :: Terminal</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: #00ff88;
+  font-family: monospace;
+}
+
+.container {
+  padding: 30px;
+  max-width: 900px;
+}
+
+.line { margin-bottom: 5px; }
+.prompt { color: #00ff88; }
+.cmd { color: #00d4ff; }
+.output { color: #cccccc; }
+
+input {
+  background: transparent;
+  border: none;
+  color: #00ff88;
+  font-family: monospace;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+}
+</style>
+</head>
+
+<body>
+<div class="container" id="terminal"></div>
+
+<script>
+const LINKS = {
+  github: "https://github.com/1ZeroByte1",
+  linkedin: "https://www.linkedin.com/in/husseinalyafeai",
+  youtube: "https://www.youtube.com/@1ZeroByte1",
+  x: "https://github.com/1ZeroByte1",
+  certificates: "https://drive.google.com/drive/folders/18SYLIKeETIyENgRCTukXRsq3a09OQ0d9"
+};
+
+const terminal = document.getElementById("terminal");
+
+function print(text, cls="output") {
+  const div = document.createElement("div");
+  div.className = "line " + cls;
+  div.innerHTML = text;
+  terminal.appendChild(div);
+}
+
+function banner() {
+  print("ZeroByte — Hacker Terminal", "cmd");
+  print("Exploit Dev | Reverse Engineering | CTF");
+  print("Location: Yemen");
+  print("Motto: 0x0 is where they see nothing; I see the beginning.");
+  print("");
+  print("Type <span class='cmd'>help</span>");
+}
+
+function help() {
+  print("Commands:");
+  print("about, skills, links, clear");
+}
+
+function about() {
+  print("Junior Security Researcher focused on exploit dev, reverse engineering, and CTF.");
+}
+
+function skills() {
+  print("Reverse Engineering");
+  print("Binary Exploitation / Pwn");
+  print("C, Python, Assembly");
+  print("Bug Bounty & CTF");
+}
+
+function links() {
+  print("GitHub: <a href='"+LINKS.github+"' target='_blank'>"+LINKS.github+"</a>");
+  print("LinkedIn: <a href='"+LINKS.linkedin+"' target='_blank'>LinkedIn</a>");
+  print("YouTube: <a href='"+LINKS.youtube+"' target='_blank'>YouTube</a>");
+  print("X: <a href='"+LINKS.x+"' target='_blank'>X</a>");
+  print("Certificates: <a href='"+LINKS.certificates+"' target='_blank'>Drive</a>");
+}
+
+function clear() {
+  terminal.innerHTML = "";
+}
+
+function command(cmd) {
+  print("<span class='prompt'>$</span> " + cmd, "cmd");
+  switch(cmd) {
+    case "help": help(); break;
+    case "about": about(); break;
+    case "skills": skills(); break;
+    case "links": links(); break;
+    case "clear": clear(); break;
+    default: print("command not found");
+  }
+}
+
+banner();
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const cmd = prompt("command:");
+    if (cmd) command(cmd.trim());
+  }
+});
+</script>
+</body>
+</html>
