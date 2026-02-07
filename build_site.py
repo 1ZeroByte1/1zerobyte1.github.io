@@ -1,4 +1,155 @@
-<!DOCTYPE html>
+#!/usr/bin/env python3
+from __future__ import annotations
+
+from pathlib import Path
+import datetime as _dt
+import zipfile
+
+
+# =========================
+# Config
+# =========================
+SITE_URL = "https://1zerobyte1.github.io/"
+BUILD_ID = _dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+
+# ✅ روابطك كما طلبت (بنفس أسماء المفاتيح)
+LINKS = {
+    "github": "https://github.com/1ZeroByte1",
+    "linkedin": "https://www.linkedin.com/in/husseinalyafeai",
+    "YouTube": "https://www.youtube.com/@1ZeroByte1",
+    "X": "https://github.com/1ZeroByte1",
+    "certificates": "https://drive.google.com/drive/folders/18SYLIKeETIyENgRCTukXRsq3a09OQ0d9",
+}
+
+# =========================
+# Files content
+# =========================
+
+ICON_SVG = r"""<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00ff88"/>
+      <stop offset="1" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#000"/>
+  <path d="M14 20h36v24H14z" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <text x="32" y="39" text-anchor="middle" font-family="Courier New, monospace" font-size="18" fill="#00ff88">0x</text>
+</svg>
+"""
+
+MANIFEST = r"""{
+  "name": "ZeroByte :: Terminal",
+  "short_name": "ZeroByte",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#050607",
+  "theme_color": "#00ff88",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
+"""
+
+SERVICE_WORKER = r"""/* ZeroByte PWA Service Worker (simple + safe cache) */
+const CACHE = "zerobyte-terminal-v1";
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./manifest.webmanifest",
+  "./service-worker.js",
+  "./robots.txt",
+  "./sitemap.xml",
+  "./assets/icon.svg"
+];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    await cache.addAll(ASSETS);
+    self.skipWaiting();
+  })());
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => (k === CACHE ? null : caches.delete(k))));
+    self.clients.claim();
+  })());
+});
+
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  // network-first for navigations, cache-first for static
+  if (req.mode === "navigate") {
+    event.respondWith((async () => {
+      try {
+        const fresh = await fetch(req);
+        const cache = await caches.open(CACHE);
+        cache.put("./", fresh.clone());
+        return fresh;
+      } catch {
+        const cached = await caches.match("./");
+        return cached || caches.match("./index.html");
+      }
+    })());
+    return;
+  }
+
+  event.respondWith((async () => {
+    const cached = await caches.match(req);
+    if (cached) return cached;
+    try {
+      const fresh = await fetch(req);
+      const cache = await caches.open(CACHE);
+      cache.put(req, fresh.clone());
+      return fresh;
+    } catch {
+      return cached;
+    }
+  })());
+});
+"""
+
+ROBOTS = r"""User-agent: *
+Allow: /
+Sitemap: https://1zerobyte1.github.io/sitemap.xml
+"""
+
+SITEMAP = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{SITE_URL}</loc>
+    <lastmod>{_dt.date.today().isoformat()}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+"""
+
+README = f"""# ZeroByte Terminal Portfolio (GitHub Pages)
+
+This repo powers: {SITE_URL}
+
+## Features
+- Terminal-style portfolio (fast, single-page, no dependencies)
+- SEO meta + structured data
+- PWA (installable) + offline cache
+- Command history + autocomplete (Tab) + shortcuts
+
+## Commands
+Type in the terminal:
+- help, about, skills, exp, projects, edu, vol, courses, links, contact
+- open <target>, copy <target>, theme, clear, banner, status, pwa, shortcuts
+
+## Deploy
+Just push to `main`. GitHub Pages will publish automatically.
+
+Build: {BUILD_ID}
+"""
+
+INDEX_HTML = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -269,7 +420,7 @@
           </span>
           <span class="kbd">Tab autocomplete • Ctrl+L clear</span>
         </div>
-        <div class="kbd">Build: 2026-02-07 14:41:05 UTC</div>
+        <div class="kbd">Build: {{BUILD_ID}}</div>
       </div>
 
       <div class="term-body">
@@ -305,11 +456,11 @@
 
     // ✅ Your real URLs (keys exactly as you requested)
     const LINKS = {
-      github: "https://github.com/1ZeroByte1",
-      linkedin: "https://www.linkedin.com/in/husseinalyafeai",
-      YouTube: "https://www.youtube.com/@1ZeroByte1",
-      X: "https://github.com/1ZeroByte1",
-      certificates: "https://drive.google.com/drive/folders/18SYLIKeETIyENgRCTukXRsq3a09OQ0d9"
+      github: "{{GITHUB}}",
+      linkedin: "{{LINKEDIN}}",
+      YouTube: "{{YOUTUBE}}",
+      X: "{{X}}",
+      certificates: "{{CERTS}}"
     };
 
     // ====== PWA ======
@@ -543,7 +694,7 @@
     function status(){
       hr();
       line(`<span class="muted">status</span> ok`);
-      line(`build: <span class="cmd">2026-02-07 14:41:05 UTC</span>`);
+      line(`build: <span class="cmd">{{BUILD_ID}}</span>`);
       line(`pwa: <span class="cmd">${("serviceWorker" in navigator) ? "supported" : "not supported"}</span>`);
       line(`theme: <span class="cmd">${document.body.getAttribute("data-theme") || "green"}</span>`);
       hr();
@@ -710,3 +861,48 @@
   </script>
 </body>
 </html>
+"""
+
+def _write(p: Path, content: str) -> None:
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(content, encoding="utf-8")
+
+def main() -> None:
+    root = Path(".").resolve()
+
+    # Replace tokens
+    html = INDEX_HTML.replace("{{BUILD_ID}}", BUILD_ID)
+    html = html.replace("{{GITHUB}}", LINKS["github"])
+    html = html.replace("{{LINKEDIN}}", LINKS["linkedin"])
+    html = html.replace("{{YOUTUBE}}", LINKS["YouTube"])
+    html = html.replace("{{X}}", LINKS["X"])
+    html = html.replace("{{CERTS}}", LINKS["certificates"])
+
+    _write(root / "index.html", html)
+    _write(root / "README.md", README)
+    _write(root / "manifest.webmanifest", MANIFEST)
+    _write(root / "service-worker.js", SERVICE_WORKER)
+    _write(root / "robots.txt", ROBOTS)
+    _write(root / "sitemap.xml", SITEMAP)
+    _write(root / "assets" / "icon.svg", ICON_SVG)
+
+    # Make a zip (optional convenience)
+    zip_name = root / "zerobyte_terminal_site.zip"
+    with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED) as z:
+        for rel in [
+            "index.html",
+            "README.md",
+            "manifest.webmanifest",
+            "service-worker.js",
+            "robots.txt",
+            "sitemap.xml",
+            "assets/icon.svg",
+        ]:
+            z.write(root / rel, arcname=rel)
+
+    print("[+] Built site files in repo root")
+    print("[+] ZIP:", zip_name.name)
+    print("[+] Build:", BUILD_ID)
+
+if __name__ == "__main__":
+    main()
