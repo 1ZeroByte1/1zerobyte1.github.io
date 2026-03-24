@@ -7,24 +7,28 @@ order: 1
 
 ## Hi, I'm Hussein (ZeroByte) 👋
 
-I am a **Junior Security Researcher** specializing in **Exploit Development** and **Binary Exploitation**. My work focuses on low-level security, reverse engineering, and understanding the internals of software vulnerabilities.
+I am a **Security Researcher** specializing in **Exploit Development**, **Binary Analysis**, and **Malware Research**. My expertise lies in deconstructing complex systems to understand their inner workings and identify security risks.
 
-### 🛡️ Technical Focus
-Currently, I spend most of my time in the world of **x86-64 Assembly** and **C programming**, analyzing memory corruptions and crafting exploits. I am a frequent competitor in CTF (Capture The Flag) challenges on platforms like **Hack The Box** and **pwn.college**, where I focus on "pwn" and reverse engineering tasks.
+### 🛡️ Technical Focus & Research
+My research is driven by a deep interest in low-level system internals. I focus on:
+* **Exploit Development:** Hunting for 0-day and N-day vulnerabilities within hardware, operating systems, and core applications.
+* **Malware Analysis:** Analyzing sophisticated malware and "cracked" software to reverse-engineer their behavior, identify malicious payloads, and document the risks they pose to users.
+* **Binary Exploitation:** Active participant in CTF competitions (pwn.college, Hack The Box), focusing on memory corruption and x86-64 Assembly.
 
 ### 🚀 Experience & Projects
-* **Vulnerability Research:** I am an active Bug Bounty Hunter on **HackerOne** and **Bugcrowd**, where I have discovered and responsibly disclosed several vulnerabilities including XSS and sensitive data exposure.
-* **Community:** I lead the **Al-Mirsad** team, a community dedicated to training and sharing knowledge in specialized cybersecurity fields.
-* **Programming:** Beyond security, I enjoy low-level development, such as building strategy games in **C** to master data structures and algorithms.
+* **Vulnerability Research:** Active Bug Bounty Hunter on **HackerOne** and **Bugcrowd**. I have successfully disclosed vulnerabilities such as XSS, subdomain takeovers, and sensitive data exposure.
+* **Community Leadership:** Founder and lead of the **Al-Mirsad** team, a dedicated community for advanced cybersecurity training and malware research.
+* **Software Development:** I leverage my knowledge of **C** and **Assembly** to build low-level tools and explore data structures through custom-built applications.
 
 ### 🎓 Education & Certifications
-* **High School:** Graduated from Al-Najah, Marib, with an 89.88% grade, excelling in Physics and Mathematics.
-* **Certifications:** Holder of several professional certs including **OST2 Vulnerabilities (1001 & 1002)** and Harvard's **CS50x, CS50AI, and CS50 Cybersecurity**.
+* **Academic:** High School graduate from Al-Najah (Marib) with a focus on Mathematics and Physics (89.88%).
+* **Professional Certs:** * OST2: Vulnerabilities 1001 & 1002 (C-Family Implementation).
+    * Harvard CS50: Computer Science, AI with Python, and Cybersecurity.
 
 ### 🛠️ Skills
-* **Languages:** Assembly, C, Python.
-* **Tools:** Reverse Engineering tools, Binary Exploitation frameworks, and Penetration Testing suites.
+* **Languages:** x86-64 Assembly, C, Python.
+* **Specialties:** Reverse Engineering, Malware Analysis, OS Internals, Penetration Testing.
 * **Human Languages:** Arabic (Native), English (Fluent), Turkish (Beginner).
 
 ---
-> *"Digging deep into the binaries to understand how things break—and how to fix them."*
+> *"I don't just use software; I break it apart to see how it works—and how it can be secured."*
